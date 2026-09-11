@@ -1,0 +1,68 @@
+substitutions:
+  name: wallknob-c6
+  friendly_name: WallKnob C6
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  comment: WallKnob-C6 Rev A
+
+esp32:
+  board: esp32-c6-devkitc-1
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "WallKnob-C6 Fallback"
+    password: !secret fallback_password
+
+captive_portal:
+
+binary_sensor:
+  - platform: gpio
+    id: encoder_button
+    name: "Button"
+    pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    filters:
+      - delayed_on: 20ms
+      - delayed_off: 20ms
+
+sensor:
+  - platform: rotary_encoder
+    id: knob
+    name: "Knob"
+    pin_a:
+      number: GPIO2
+      mode:
+        input: true
+        pullup: true
+    pin_b:
+      number: GPIO3
+      mode:
+        input: true
+        pullup: true
+    resolution: 1
+    restore_mode: ALWAYS_ZERO
+
+light:
+  - platform: status_led
+    id: status
+    name: "Status LED"
+    pin:
+      number: GPIO5
+      inverted: false
